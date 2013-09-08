@@ -37,6 +37,9 @@ typedef NS_ENUM(NSUInteger, RMSwipeTableViewCellAnimationType) {
 @property (nonatomic, strong) UIColor *backViewbackgroundColor; // default is [UIColor colorWithWhite:0.92 alpha:1]
 @property (nonatomic, assign) id <RMSwipeTableViewCellDelegate> delegate;
 
+@property (nonatomic, readwrite, assign) BOOL isOpen;
+@property (nonatomic, readwrite, assign) int openWidth;
+
 // exposed class methods for easy subclassing
 -(void)handlePanGesture:(UIPanGestureRecognizer *)panGestureRecognizer;
 -(void)didStartSwiping;

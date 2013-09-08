@@ -54,6 +54,7 @@
         [_messagesArray addObject:@{ @"sender" : @"Craig Federighi", @"message" : @"I know, I am using 5 screens on my Mac now, I love that feature!" }];
         [_messagesArray addObject:@{ @"sender" : @"Peter Openheimer", @"message" : @"Honestly, I am not worried, the stock will bounce back..." }];
         [_messagesArray addObject:@{ @"sender" : @"Scott Forstall", @"message" : @"Hey, why are you not responding to my messages???" }];
+        [_messagesArray addObject:@{ @"sender" : @"jim", @"message" : @"If you don't stop prying... I will burn you. I will burn...the heart out of you." }];
 //        [_messagesArray addObject:@{ @"sender" : @"", @"message" : @"" }];
     }
     return _messagesArray;
@@ -168,10 +169,23 @@
 #pragma mark - RMSwipeTableViewCell delegate methods
 
 -(void)swipeTableViewCellDidStartSwiping:(RMSwipeTableViewCell *)swipeTableViewCell {
+   
     NSIndexPath *indexPathForCell = [self.tableView indexPathForCell:swipeTableViewCell];
     if (self.selectedIndexPath.row != indexPathForCell.row) {
         [self resetSelectedCell];
     }
+    
+    BOOL cellIsOpen = ((RMSwipeTableViewCelliOS7UIDemoTableViewCell *)swipeTableViewCell).isOpen;
+    if (cellIsOpen)
+    {
+        // cell already open
+        swipeTableViewCell.panElasticityStartingPoint = -80;
+    }
+    else
+    {
+        swipeTableViewCell.panElasticityStartingPoint = 0;
+    }
+
 }
 
 -(void)resetSelectedCell {
@@ -226,6 +240,9 @@
                          }];
     }
      */
+    
+    swipeTableViewCell.isOpen = TRUE;
+
 }
 
 @end

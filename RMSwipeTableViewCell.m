@@ -8,7 +8,10 @@
 
 #import "RMSwipeTableViewCell.h"
 
+#define LogMessageCompat NSLog
+
 @interface RMSwipeTableViewCell ()
+
 
 @end
 
@@ -35,6 +38,7 @@
 - (void)initialize
 {
     // We need to set the contentView's background colour, otherwise the sides are clear on the swipe and animations
+    // bubuli
     [self.contentView setBackgroundColor:[UIColor whiteColor]];
     UIPanGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanGesture:)];
     [panGestureRecognizer setDelegate:self];
@@ -44,9 +48,11 @@
     self.animationType = RMSwipeTableViewCellAnimationTypeBounce;
     self.animationDuration = 0.2f;
     self.shouldAnimateCellReset = YES;
-    self.backViewbackgroundColor = [UIColor colorWithWhite:0.92 alpha:1];
+    //self.backViewbackgroundColor = [UIColor colorWithWhite:0.92 alpha:1];
     self.panElasticity = YES;
     self.panElasticityStartingPoint = 0;
+    self.isOpen = NO;
+    self.openWidth = 80;
     
     UIView *backgroundView = [[UIView alloc] initWithFrame:self.frame];
     backgroundView.backgroundColor = [UIColor whiteColor];
@@ -91,7 +97,16 @@
         }
     }
     CGPoint actualTranslation = CGPointMake(panOffset, translation.y);
+    
+    LogMessageCompat(@"actualTranslation x = %1.2f", actualTranslation.x);
+    if (self.isOpen)
+    {
+        actualTranslation.x = MIN(actualTranslation.x - self.openWidth, -(self.openWidth));
+        LogMessageCompat(@"actualTranslation recomputed x = %1.2f", actualTranslation.x);
+    }
+    
     if (panGestureRecognizer.state == UIGestureRecognizerStateBegan && [panGestureRecognizer numberOfTouches] > 0) {
+        
         [self didStartSwiping];
         [self animateContentViewForPoint:actualTranslation velocity:velocity];
     } else if (panGestureRecognizer.state == UIGestureRecognizerStateChanged && [panGestureRecognizer numberOfTouches] > 0) {
@@ -112,6 +127,8 @@
 #pragma mark - Gesture animations
 
 -(void)animateContentViewForPoint:(CGPoint)point velocity:(CGPoint)velocity {
+    LogMessageCompat(@"animateContentViewForPoint x = %1.2f", point.x);
+    
     if ((point.x > 0 && self.revealDirection == RMSwipeTableViewCellRevealDirectionLeft) || (point.x < 0 && self.revealDirection == RMSwipeTableViewCellRevealDirectionRight) || self.revealDirection == RMSwipeTableViewCellRevealDirectionBoth) {
         self.contentView.frame = CGRectOffset(self.contentView.bounds, point.x, 0);
         if ([self.delegate respondsToSelector:@selector(swipeTableViewCell:didSwipeToPoint:velocity:)]) {
